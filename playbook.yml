@@ -1,0 +1,39 @@
+- hosts: all
+  become: True
+  vars:
+    - boom_go_pkg: github.com/rakyll/boom
+    - boom_gopath: /opt
+    - boom_executable_fullpath: "{{ boom_gopath }}/bin/boom"
+
+  tasks:
+    - name: install necessary pkgs for installing via golang
+      apk: name={{ item }} state=latest
+      with_items:
+        - go
+        - git
+
+    - name: mkdir for GOPATH
+      file: path={{ boom_gopath }}  state=directory
+
+    - debug: var=boom_gopath
+
+    - name: compile and install executable
+      command: go get "{{ boom_go_pkg }}"
+      args:
+        creates: "{{ boom_executable_fullpath }}"
+      environment:
+        GO15VENDOREXPERIMENT: 1
+        GOPATH: "{{ boom_gopath }}"
+
+    - name: move executable
+      command: cp  "{{ boom_executable_fullpath }}"  /usr/local/bin/boom
+
+
+    - name: uninstall pkgs for installing via golang
+      apk: name={{ item }} state=absent
+      with_items:
+        - go
+        - git
+
+    - name: remove GOPATH
+      file: path={{ boom_gopath }}  state=absent
