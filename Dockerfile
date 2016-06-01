@@ -18,17 +18,6 @@ FROM williamyeh/ansible:mini-alpine3
 MAINTAINER William Yeh <william.pjyeh@gmail.com>
 
 
-#COPY . /tmp
-#WORKDIR /tmp 
-#RUN ./prepare-pkg-list.sh       && \
-#    ./install-ansible.sh        && \
-#    ./ansible-playbook-wrapper  && \
-#    ./uninstall-ansible.sh
-#    cd /                        && \
-#    rm -rf /tmp/*
-
-
-######
 
 # Define default command.
 ENTRYPOINT ["/usr/local/bin/boom"]
